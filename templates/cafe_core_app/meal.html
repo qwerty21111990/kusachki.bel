@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %} {{ meal.name }} {% endblock %}
+{% block bg_image %}{% static 'images/sam-masters.mp4' %}{% endblock bg_image %}
+
+{% block content %}
+    {% if meal %}
+        <!-- Signature Dishes -->
+
+	<div class="sig">
+		<div class="container">
+
+					<!-- Signature Dish -->
+					<div class="sig_dish">
+						<div class="row row-eq-height">
+							<div class="col-lg-6 sig_col d-flex flex-column align-items-start justify-content-center">
+								<div class="sig_content">
+									<div class="rating_r sig_rating rating_r_5"><i></i><i></i><i></i><i></i><i></i></div>
+									<div class="sig_name_container d-flex flex-row align-items-start justify-content-start">
+										<div class="sig_name">{{ meal.name }}</div>
+										<div class="sig_price ml-auto">ОТ {{meal.price }} BYN</div>
+
+									</div>
+									<div class="sig_content_list">
+										<ul class="d-flex flex-row align-items-center justify-content-start">
+											<li>{{ meal.description }}</li>
+
+										</ul>
+									</div>
+																	</div>
+							</div>
+                        <div class="col-lg-6 sig_col">
+
+                            {% for image in meal.images.all %}
+
+
+								<div class="sig_image"><img src="{{ image.image.url }}" alt="" width="500" height="300"></div><br>
+
+                                {% endfor %}
+							</div>
+
+						</div>
+					</div>
+
+
+
+		</div>
+	</div>
+    {% else %}
+        Пусто
+    {% endif %}
+{% endblock %}
+  <p><b>Услуги: </b>{{ meal.name }}</p>
+        <p><b>Описание: </b>{{ meal.description }}</p>
+        <p><b>Цена: </b>{{ meal.price }} BYN</p>
+        {{ meal.imagemeal_set.all }}

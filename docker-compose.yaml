@@ -1,0 +1,55 @@
+version: "3.3"
+
+services:
+  redis:
+    image: "redis:alpine"
+    restart: always
+    command: redis-server --requirepass sOmE_sEcUrE_pAsS
+    ports:
+      - "6379:6379"
+    volumes:
+      - ./redis-data:/var/lib/redis
+      - ./redis.conf:/usr/local/etc/redis/redis.conf
+    environment:
+      - REDIS_REPLICATION_MODE=master
+      - "REDIS_HOST=redis"
+      - "REDIS_PORT=6379"
+  back:
+    build: overschool
+    image: back
+    restart: always
+    command: bash -c "cd overschool && make back"
+    container_name: backendDjango
+    ports:
+      - "8000:8000"
+    depends_on:
+      - redis
+    volumes:
+      - .:/code/
+  huey:
+    build:
+      context: .
+      dockerfile: huey_task.Dockerfile
+    image: huey
+    restart: always
+    ports:
+      - "8002:8002"
+    depends_on:
+      - redis
+
+
+#  celery:
+#    restart: always
+#    build:
+#      context: overschool
+#    command: celery -A overschool worker -l info
+#    volumes:
+#      - ./app:/app
+#  celery-beat:
+#    build:
+#      context: overschool
+#    command: celery -A overschool beat -l info
+#    volumes:
+#      - .app:/app_beat
+#    depends_on:
+#      - redis
